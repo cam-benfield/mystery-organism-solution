@@ -13,47 +13,68 @@ const mockUpStrand = () => {
   return newStrand
 }
 
-const pAequorFactory = (specimanNum, dna) => {
-  return {
-    specimanNum,
-    dna,
+
+
+pAqueorFactory = (number, baseArray) =>{
+  if (typeof(number) == 'number') {
+
+  const pAqueor = {
+    specimen: number,
+    dna: baseArray,
     mutate() {
-      const randIndex = Math.floor(Math.random() * this.dna.length);
+      let mutatedBase = Math.floor(Math.random()*15);
       let newBase = returnRandBase();
-      while (this.dna[randIndex] === newBase) {
+      while (newBase == this.dna[mutatedBase]) {
         newBase = returnRandBase();
       }
-      this.dna[randIndex] = newBase;
-      return this.dna;
+      this.dna[mutatedBase] = newBase;
     },
-    compareDNA(otherOrg) {
-      const similarities = this.dna.reduce((acc, curr, idx, arr) => {
-        if (arr[idx] === otherOrg.dna[idx]) {
-          return acc + 1;
-        } else {
-          return acc;
+    compareDNA(object) {
+      let oldDNA = object.dna;
+      let currentDNA = this.dna;
+      let dnaMatches = 0
+      for (i=0; i< this.dna.length; i++) {
+        if (object.dna[i] == this.dna[i]) {
+          dnaMatches ++;
+          console.log(dnaMatches)
+        }}
+      const percInCommon = (dnaMatches/this.dna.length) * 100
+      return `Specimens ${object.specimen} and ${this.specimen} have ${percInCommon}% of their DNA in Common.`;
+    },
+    willLikelySurvive(){
+      let cgTotal = 0
+      for(i=0; i<this.dna.length;i++) {
+        if(this.dna[i] == 'C' || this.dna[i] == 'G') {
+          cgTotal ++
         }
-      }, 0);
-      const percentOfDNAshared = (similarities / this.dna.length) * 100;
-      const percentageTo2Deci = percentOfDNAshared.toFixed(2);
-      console.log(`${this.specimanNum} and ${otherOrg.specimanNum} have ${percentageTo2Deci}% DNA in common.`);
-    },
-    willLikelySurvive() {
-      const cOrG = this.dna.filter(el => el === "C" || el === "G");
-      return cOrG.length / this.dna.length >= 0.6;
-    },
+      }
+    const survLikely = (cgTotal/this.dna.length) * 100
+    return (survLikely >= 60);
+    }
+  }
+
+  return pAqueor;
+
+  } else {
+    return 'invalid specimen number. Please input a number.'
   }
 };
 
-const survivingSpecimen = [];
-let idCounter = 1;
+const specNums = [];
+let successes = 0;
+successfulSpecimens = []
 
-while (survivingSpecimen.length < 30) {
-  let newOrg = pAequorFactory(idCounter, mockUpStrand());
-  if (newOrg.willLikelySurvive()) {
-    survivingSpecimen.push(newOrg);
+for (n=345; n<375; n++){ /* Creating specimen numbers */
+  specNums.push(n);
   }
-  idCounter++;
-}
 
-console.log(survivingSpecimen)
+for (i=0;i<specNums.length;i++){
+  while (successfulSpecimens.length < 29){
+    let temp_object = pAqueorFactory(specNums[i],mockUpStrand())
+    if (temp_object.willLikelySurvive()){
+      successfulSpecimens.push(temp_object);
+    }
+  }
+};
+
+console.log(successFulSpecimens)
